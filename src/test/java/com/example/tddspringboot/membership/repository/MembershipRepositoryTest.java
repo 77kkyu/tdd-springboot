@@ -2,9 +2,13 @@ package com.example.tddspringboot.membership.repository;
 
 import com.example.tddspringboot.membership.domain.Membership;
 import com.example.tddspringboot.membership.domain.MembershipType;
+import com.example.tddspringboot.membership.model.MembershipDetail;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -35,6 +39,50 @@ public class MembershipRepositoryTest {
     @Test
     public void MembershipRepositoryIsNotNull() {
         assertThat(membershipRepository).isNotNull();
+    }
+
+    @Test
+    public void 멤버십조회_사이즈가2() {
+
+        // given
+        final Membership kakaoMemberShip = Membership.builder()
+                .userId("hash")
+                .membershipType(MembershipType.KAKAO)
+                .point(1000)
+                .build();
+
+        final Membership naverMemberShip = Membership.builder()
+                .userId("hash")
+                .membershipType(MembershipType.NAVER)
+                .point(1000)
+                .build();
+
+        membershipRepository.save(kakaoMemberShip);
+        membershipRepository.save(naverMemberShip);
+
+        // when
+        List<Membership> result = membershipRepository.findAllByUserId("hash");
+
+        // then
+        AssertionsForClassTypes.assertThat(result.size()).isEqualTo(2);
+
+    }
+
+    @Test
+    public void 멤버십추가후삭제() {
+
+        // given
+        final Membership kakaoMembership = Membership.builder()
+                .userId("hash")
+                .membershipType(MembershipType.KAKAO)
+                .point(1000)
+                .build();
+
+        final Membership savedMembership = membershipRepository.save(kakaoMembership);
+
+        // when
+        membershipRepository.deleteById(savedMembership.getId());
+
     }
 
 }
