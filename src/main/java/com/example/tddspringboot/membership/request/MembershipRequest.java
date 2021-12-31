@@ -1,5 +1,6 @@
 package com.example.tddspringboot.membership.request;
 
+import com.example.tddspringboot.membership.codes.ValidationGroups;
 import com.example.tddspringboot.membership.domain.MembershipType;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,11 +16,12 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor(force = true)
 public class MembershipRequest {
 
-    @NotNull
-    @Min(0)
+    @NotNull(groups = {ValidationGroups.MembershipAddMarker.class, ValidationGroups.MembershipAccumulateMarker.class})
+    @Min(value = 0, groups = {ValidationGroups.MembershipAddMarker.class, ValidationGroups.MembershipAccumulateMarker.class})
     private final Integer point;
 
-    @NotNull
+    @NotNull(groups = {ValidationGroups.MembershipAddMarker.class})
     private final MembershipType membershipType;
 
 }
+
